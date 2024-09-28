@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Fortune Lover</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+
+    <link rel="shortcut icon" href="./game/alan/link.png" />
+
+    <style>
+        body {
+            max-height: 100vh;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background-image: url(./game/alan/data/bgimage/title.png);
+            background-repeat: no-repeat;
+            background-color: black;
+            background-size: contain;
+            background-position: bottom;
+            margin: auto;
+        }
+
+        .lang {
+            font-size: xx-large;
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1%;
+        }
+
+        .lang select {
+            font: inherit;
+        }
+
+        .lang option {
+            font: inherit;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3%;
+
+            width: 40%;
+            max-width: 800px;
+
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 2%;
+        }
+
+        .grid img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+    </style>
+
+    <script>
+        function setLangSelect() {
+            const lang = window.location.search || "?en";
+            document.getElementById("lang").value = lang;
+            [...document.getElementsByTagName("a")].forEach(a => {
+                a.href = a.href.split("?")[0] + lang;
+            });
+        }
+
+        window.onload = setLangSelect;
+    </script>
+</head>
+
+<body>
+    <div class="lang">
+        <select id="lang" onchange="location.href = this.value;">
+            <option value="?en">English</option>
+            <option value="?jp">日本語</option>
+            <option value="?ru">Русский</option>
+        </select>
+    </div>
+
+    <div class="grid">
+        <a href="./game/alan/">
+            <img src="./game/alan/data/bgimage/alan2.png" />
+        </a>
+        <a href="./game/geordo/">
+            <img src="./game/geordo/data/bgimage/hamehura_jiorudo1.png" />
+        </a>
+        <a href="./game/keith/">
+            <img src="./game/keith/data/bgimage/keeth1.png" />
+        </a>
+        <a href="./game/nicol/">
+            <img src="./game/nicol/data/bgimage/nicol1.png" />
+        </a>
+    </div>
+
+</body>
+
+</html>

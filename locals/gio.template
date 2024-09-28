@@ -1,0 +1,1660 @@
+
+;ティラノスクリプトサンプルゲーム
+
+*start
+
+;タイトルマスク
+
+[cm]
+[clearfix]
+[start_keyconfig]
+
+[mask graphic="now_loading.png" time=10]
+
+;[preload storage="data/bgimage/001.png"]
+
+
+;メニューボタンの表示
+;@showmenubutton
+
+;メッセージウィンドウの設定
+[position layer=message0 width=960 height=280 top=510 left=180]
+[position layer=message0 page=fore frame="frame.png" margint="30" marginl="100" marginr="70" marginb="60" ]
+[image layer="message0" name="nameplate" storage="name_blue.png" folder="image" left=210 top=490 zindex="111" ]
+
+[iscript]
+$(".nameplate").hide();
+[endscript]
+
+;メッセージウィンドウの表示
+[layopt layer=message0 visible=false]
+[layopt layer="0" visible=true]
+[layopt layer="1" visible=true]
+
+;キャラクターの名前が表示される文字領域
+[ptext name="chara_name_area" layer="message0" color="0x8b8f98" size=26 bold="bold" x=240 y=500 width=200 align=center]
+
+;上記で定義した領域がキャラクターの名前表示であることを宣言（これがないと#の部分でエラーになります）
+[chara_config ptext="chara_name_area"]
+[chara_config talk_focus="brightness" ]
+[chara_config time="10" ]
+
+;このゲームで登場するキャラクターを宣言
+;[preload storage="tyrano/images/system/nextpage.gif" ]
+
+
+;ロールボタン配置
+;セーブ
+[button name="role_button" role="menu" graphic="btn_save.png"  x=0 y=0]
+
+;バックログ
+[button name="role_button" role="backlog" graphic="btn_log.png" x=1125 y=530]
+
+;ボリュームボタン
+[button name="btn_volume" role="none" fix=true graphic="btn_volume.png" x=1135 y=595]
+
+[iscript]
+    
+    sf.btn_volume = true;
+    
+    $(".btn_volume").on("click",function(){
+        
+        if(sf.btn_volume==true){
+            sf.btn_volume = false;
+            $(".btn_volume").attr("src","./data/image/btn_volume_off.png");
+            TG.ftag.startTag("stopse", {buf:"2",stop:"true"});
+            TG.tmp.map_bgm["0"].muted = true;
+        
+        }else{
+            sf.btn_volume = true;
+            $(".btn_volume").attr("src","./data/image/btn_volume.png");
+            TG.tmp.map_bgm["0"].muted = false;
+        
+        }
+        
+    });
+    
+    f.mixmode = false;
+    
+    if ('CSS' in window && 'supports' in window.CSS) {
+        if (window.CSS.supports('mix-blend-mode', 'soft-light')) {
+          f.mixmode = true;
+        }
+    }
+    
+    
+
+[endscript]
+
+[macro name="v" ]
+    
+    [if exp="sf.btn_volume==true"]
+    
+    [eval exp="mp.storage='vo/'+mp.storage+'.ogg'" ]
+    
+    [playse * buf=2 ]
+    
+    [endif]
+    
+[endmacro]
+
+[macro name="quake_camera" ]
+
+[kanim layer=0 name="layer_camera" keyframe=quake time=300 count=2 easing=linear mode="none"]
+
+[iscript]
+$(".layer_camera").css({
+    "animation-play-state":"",
+    "animation-iteration-count":"",
+    "animation-fill-mode":"",
+    "animation-timing-function":"",
+    "transform":""
+});
+
+[endscript]
+
+[endmacro]
+
+[macro name="love_up"]
+
+[iscript]
+
+$(".celanim").remove();
+
+f.love++;
+tf.love_file='love_'+f.love+'.png';
+[endscript]
+
+[free layer=0 name="love" time=100 ]
+[image layer=0 name="love" storage="&tf.love_file" left=980 top=10 time=500] 
+
+[endmacro]
+
+
+[iscript]
+
+    f.top = -120;
+    f.left = -120;
+    f.right = 300;
+    f.love = 0;
+    
+    if(sf.gio_cg_1==undefined){
+       sf.gio_cg_1=false;
+       sf.gio_cg_2=false;
+    }
+
+        
+[endscript]
+
+
+
+[iscript]
+
+f.charas = [
+
+"data/fgimage/chara/gio/hamehura_Giord_cos1_ai.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_aku.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_def.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_do.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_doya.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_man.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_odo.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_tobo.png",
+
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_ai.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_aku.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_aku2.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_base.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_def.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_do.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_man.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_odo.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_tobo.png",
+
+"data/fgimage/chara/maria/hamehura_Maria_cos1_ai.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_ase.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_cry.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_def.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_def2.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_do.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_mu.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_odo.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_tere.png",
+
+
+"data/fgimage/chara/reijo1/hamehura_DVDmob1_fear.png",
+"data/fgimage/chara/reijo2/hamehura_DVDmob2_fear.png",
+"data/fgimage/chara/reijo3/hamehura_DVDmob3_do.png",
+
+
+"data/fgimage/chara/gio/hamehura_Giord_cos1_ai_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_aku_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_def_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_do_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_doya_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_man_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_odo_b.png",
+"data/fgimage/chara/gio/hamehura_Giord_cos1_tobo_b.png",
+
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_ai_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_aku_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_aku2_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_base_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_def_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_do_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_man_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_odo_b.png",
+"data/fgimage/chara/kata/hamehura_Catalina_cos1_tobo_b.png",
+
+"data/fgimage/chara/maria/hamehura_Maria_cos1_ai_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_ase_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_cry_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_def_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_def2_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_do_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_mu_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_odo_b.png",
+"data/fgimage/chara/maria/hamehura_Maria_cos1_tere_b.png",
+
+
+"data/fgimage/chara/reijo1/hamehura_DVDmob1_fear_b.png",
+"data/fgimage/chara/reijo2/hamehura_DVDmob2_fear_b.png",
+"data/fgimage/chara/reijo3/hamehura_DVDmob3_do_b.png"
+ 
+ ];
+
+
+[endscript]
+
+[preload storage="&f.charas"]
+
+
+;キャラクター情報読み込み
+[chara_new  name="gio"   color="0x6b7c9d" storage="chara/gio/hamehura_Giord_cos1_ai.png" jname="ジオルド" ]
+[chara_new  name="kata"  color="0xff0981" storage="chara/kata/hamehura_Catalina_cos1_ai.png" jname="カタリナ" ]
+[chara_new  name="maria" color="0xff0981" storage="chara/maria/hamehura_Maria_cos1_ai.png" jname="マリア" ]
+
+[chara_new  name="reijo1" color="0x8b8f98" storage="chara/reijo1/hamehura_DVDmob1_def.png" jname="令嬢1" ]
+[chara_new  name="reijo2" color="0x8b8f98" storage="chara/reijo2/hamehura_DVDmob2_def.png" jname="令嬢2" ]
+[chara_new  name="reijo3" color="0x8b8f98" storage="chara/reijo3/hamehura_DVDmob3_def.png" jname="令嬢3" ]
+
+;キャラクターの表情登録
+;ジオルド
+[chara_face name="gio" face="hamehura_Giord_cos1_ai" storage="chara/gio/hamehura_Giord_cos1_ai.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_aku" storage="chara/gio/hamehura_Giord_cos1_aku.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_def" storage="chara/gio/hamehura_Giord_cos1_def.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_do" storage="chara/gio/hamehura_Giord_cos1_do.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_doya" storage="chara/gio/hamehura_Giord_cos1_doya.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_man" storage="chara/gio/hamehura_Giord_cos1_man.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_odo" storage="chara/gio/hamehura_Giord_cos1_odo.png"]
+[chara_face name="gio" face="hamehura_Giord_cos1_tobo" storage="chara/gio/hamehura_Giord_cos1_tobo.png"]
+
+;カタリナ
+[chara_face name="kata" face="hamehura_Catalina_cos1_ai" storage="chara/kata/hamehura_Catalina_cos1_ai.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_aku" storage="chara/kata/hamehura_Catalina_cos1_aku.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_aku2" storage="chara/kata/hamehura_Catalina_cos1_aku2.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_base" storage="chara/kata/hamehura_Catalina_cos1_base.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_def" storage="chara/kata/hamehura_Catalina_cos1_def.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_def2" storage="chara/kata/hamehura_Catalina_cos1_def2.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_do" storage="chara/kata/hamehura_Catalina_cos1_do.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_man " storage="chara/kata/hamehura_Catalina_cos1_man.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_odo" storage="chara/kata/hamehura_Catalina_cos1_odo.png"]
+[chara_face name="kata" face="hamehura_Catalina_cos1_tobo" storage="chara/kata/hamehura_Catalina_cos1_tobo.png"]
+
+;マリア
+[chara_face name="maria" face="hamehura_Maria_cos1_ai" storage="chara/maria/hamehura_Maria_cos1_ai.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_ase" storage="chara/maria/hamehura_Maria_cos1_ase.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_cry" storage="chara/maria/hamehura_Maria_cos1_cry.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_def" storage="chara/maria/hamehura_Maria_cos1_def.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_def2" storage="chara/maria/hamehura_Maria_cos1_def2.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_do" storage="chara/maria/hamehura_Maria_cos1_do.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_mu" storage="chara/maria/hamehura_Maria_cos1_mu.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_odo" storage="chara/maria/hamehura_Maria_cos1_odo.png"]
+[chara_face name="maria" face="hamehura_Maria_cos1_tere" storage="chara/maria/hamehura_Maria_cos1_tere.png"]
+
+
+;令嬢たち
+[chara_face name="reijo1" face="hamehura_DVDmob1_def" storage="chara/reijo1/hamehura_DVDmob1_def.png"]
+[chara_face name="reijo1" face="hamehura_DVDmob1_do" storage="chara/reijo1/hamehura_DVDmob1_do.png"]
+[chara_face name="reijo1" face="hamehura_DVDmob1_fear" storage="chara/reijo1/hamehura_DVDmob1_fear.png"]
+[chara_face name="reijo1" face="hamehura_DVDmob1_mu" storage="chara/reijo1/hamehura_DVDmob1_mu.png"]
+
+
+[chara_face name="reijo2" face="hamehura_DVDmob2_def" storage="chara/reijo2/hamehura_DVDmob2_def.png"]
+[chara_face name="reijo2" face="hamehura_DVDmob2_do" storage="chara/reijo2/hamehura_DVDmob2_do.png"]
+[chara_face name="reijo2" face="hamehura_DVDmob2_fear" storage="chara/reijo2/hamehura_DVDmob2_fear.png"]
+[chara_face name="reijo2" face="hamehura_DVDmob2_mu" storage="chara/reijo2/hamehura_DVDmob2_mu.png"]
+
+
+[chara_face name="reijo3" face="hamehura_DVDmob3_def" storage="chara/reijo3/hamehura_DVDmob3_def.png"]
+[chara_face name="reijo3" face="hamehura_DVDmob3_do" storage="chara/reijo3/hamehura_DVDmob3_do.png"]
+[chara_face name="reijo3" face="hamehura_DVDmob3_fear" storage="chara/reijo3/hamehura_DVDmob3_fear.png"]
+[chara_face name="reijo3" face="hamehura_DVDmob3_mu" storage="chara/reijo3/hamehura_DVDmob3_mu.png"]
+
+
+; 背景先読み
+[preload storage="data/bgimage/hamehura_jiorudo1.png" ]
+[preload storage="data/bgimage/hamehura_jiorudo2.png" ]
+
+[preload storage="data/bgimage/HF04_002.png" ]
+[preload storage="data/bgimage/HF04_078.png" ]
+[preload storage="data/bgimage/HF04_251.png" ]
+[preload storage="data/bgimage/HF04_283.png" ]
+[preload storage="data/bgimage/HF04_292.png" ]
+
+
+[bg storage="HF04_002.png"]
+
+[layopt layer=message0 visible=true]
+
+;Loveメーター
+[image layer=0 name="love" storage="love_0.png" left=980 top=10 ] 
+
+
+
+[mask_off time=500 ]
+
+
+[keyframe name=rotate]
+[frame p=0%  rotate=0deg]
+[frame p=100% rotate=360deg]
+[endkeyframe]
+
+[keyframe name=quake]
+[frame p=8%   x=0   y=-6]
+[frame p=16%  x=-8  y=0]
+[frame p=24%  x=2   y=8]
+[frame p=32%  x=9   y=2]
+[frame p=40%  x=1   y=-11]
+[frame p=48%  x=-12 y=-2]
+[frame p=56%  x=5   y=11]
+[frame p=64%  x=13  y=-4]
+[frame p=72%  x=2   y=-15]
+[frame p=80%  x=-5  y=-12]
+[frame p=88%  x=-8  y=-8]
+[frame p=96%  x=17  y=9]
+[frame p=100% x=0   y=-6]
+[endkeyframe]
+
+
+
+*common
+;============== ゲームスタート ====================
+
+[chara_show name="maria" top=&f.top face="hamehura_Maria_cos1_ase"]
+
+;[jump target="dev5"]
+
+#{name1}	
+{phrase2}[p]
+[playbgm  volume=30   storage="M08_FinalMix.ogg" ]
+
+;再生[p]
+;[layermode_movie mute=true video=kirakira.webm time=1500 mode=screen wait=true loop=false ]
+;[free_layermode]
+
+
+
+{phrase3}
+#{name1}
+[celanim anim="red_rose_1" layer="1" x=260 y=-150 count=1 speed=0.5 wait=false ]
+[anim name="celanim" top=100 time=2000]
+[wa]
+@wait time=100
+[celanim anim="red_rose_2" layer="1" x=260 y=100 count=1 speed=0.5 wait=true]
+*/
+
+#
+{phrase4}[l][r]
+{phrase5}[r]
+{phrase6}[p]
+
+#
+{phrase7}[l][r]
+{phrase8}[r]
+{phrase9}[p]
+
+#{name1}
+{phrase10}[l][r]
+{phrase11}[p]
+
+[bg storage="HF04_078.png"]
+
+#
+{phrase12}[l][r]
+{phrase13}[p]
+
+#{name1}:hamehura_Maria_cos1_def
+{phrase14}[r]
+{phrase15}[p]
+
+#
+{phrase16}[r]
+{phrase17}[p]
+#
+{phrase18}[l][r]
+{phrase19}[r]
+{phrase20}[p]
+
+[v storage="h1"]
+#？？？
+{phrase21}[r]
+{phrase22}[p]
+
+#{name1}:hamehura_Maria_cos1_odo
+{phrase23}[p]
+
+#{name1}	
+{phrase24}[p]
+
+#
+{phrase25}[r]
+{phrase26}[l][r]
+{phrase27}[p]
+
+[chara_move name="maria" left="&f.left" face="hamehura_Maria_cos1_ase"]
+
+#{name28}
+[chara_show name="gio" top="&f.top" left="&f.right" face="hamehura_Giord_cos1_doya"]
+
+
+#{name1}	
+{phrase29}[p]
+
+[v storage="h2"]
+#
+{phrase30}[l][r]
+{phrase31}[p]
+
+#
+{phrase32}[r]
+{phrase33}[p]
+
+#{name1}
+{phrase34}[r]
+{phrase35}[r]
+{phrase36}[p]
+
+#{name28}	
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+
+[v storage="17"]
+{phrase37}[r]
+{phrase38}[r]
+{phrase39}[p]
+
+*dev4
+
+#{name1}	
+{phrase40}[p]
+{phrase41}
+
+[button name="button" graphic="select/ans_01_01.png" enterimg="select/ans_01_01_on.png" x=220 y=100 text="{text42}"  target="*select_01_01"]
+[button name="button" graphic="select/ans_01_02.png" enterimg="select/ans_01_02_on.png" x=220 y=240 text="{text43}" target="*select_01_02" ]
+
+[s]
+
+;正直に話す
+*select_01_01
+[cm]
+
+#{name1}
+{phrase44}[r]
+{phrase45}[p]
+
+#{name28}	
+[chara_mod  name="gio" face="hamehura_Giord_cos1_doya"]
+
+#{name28}	
+
+{phrase46}[l][r]
+{phrase47}[p]
+
+#
+{phrase48}[r]
+{phrase49}[r]
+{phrase50}[p]
+
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+[v storage="h2"]
+
+#{name28}
+[celanim anim="red_rose_1" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+@wait time=200
+[celanim anim="red_rose_2" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+
+[love_up]
+
+#
+{phrase51}[r]
+{phrase52}[p]
+
+#
+{phrase53}[r]
+{phrase54}[l][r]
+{phrase55}[p]
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ai"]
+
+#
+{phrase56}[p]
+
+#
+{phrase57}[r]
+{phrase58}[p]
+
+#
+
+{phrase59}[r]
+{phrase60}[r]
+{phrase61}[p]
+
+[jump target="*common_01"]
+
+;ごまかす
+
+*select_01_02
+[cm]
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ase" ]
+
+#{name1}
+{phrase62}[r]
+{phrase63}[p]
+
+#{name1}
+{phrase64}[l][r]
+{phrase65}[p]
+
+#{name28}
+{phrase66}[r]
+{phrase67}[p]
+
+[chara_mod  name="gio" face="hamehura_Giord_cos1_def"]
+
+#
+{phrase68}[p]
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ai"]
+
+#
+{phrase69}[l][r]
+{phrase70}[r]
+{phrase71}[p]
+
+[chara_mod  name="gio" face="hamehura_Giord_cos1_ai"]
+
+#{name28}
+{phrase72}[l][r]
+{phrase73}[p]
+
+#
+{phrase74}[r]
+{phrase75}[p]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_def"]
+
+#{name28}
+{phrase76}[p]
+
+#{name1}	
+{phrase77}[p]
+
+
+*common_01
+
+
+#{name28}
+[v storage="25"]
+{phrase78}[p]
+
+#{name28}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_odo"]
+
+#
+[v storage="h2"]
+{phrase79}[l][r]
+{phrase80}[r]
+{phrase81}[p]
+
+#{name1}
+{phrase82}[p]
+
+#
+{phrase83}[l][r]
+{phrase84}[r]
+{phrase85}[p]
+
+*dev5
+
+[fadeoutbgm time=2000]
+
+;暗転
+[mask graphic="black.png" time=2000]
+
+[bg storage="black.png" time=10 ]
+[chara_hide name="gio" time=10]
+[chara_hide name="maria" time=10 ]
+
+[wait time=2000 ]
+
+[chara_show time=10 name="maria" top="&f.top" face="hamehura_Maria_cos1_def"]
+
+[bg storage="HF04_251.png" time=10] 
+
+
+[mask_off time=2000 ]
+
+
+[playbgm  volume=30   storage="M24A_FinalMix.ogg" ]
+
+#{name1}
+{phrase86}[p]
+
+#
+{phrase87}[r]
+{phrase88}[p]
+
+#
+{phrase89}[r]
+{phrase90}[r]
+{phrase91}[p]
+
+#{name1}
+{phrase92}[r]
+{phrase93}[l][r]
+{phrase94}[p]
+
+#
+{phrase95}[r]
+{phrase96}[p]
+{phrase97}[r]
+{phrase98}[p]
+
+[fadeoutbgm time=1000]
+
+#
+{phrase99}[p]
+
+[playbgm  volume=30   storage="M43_FinalMix.ogg"]
+
+[chara_move name="maria" left="&f.left" ]
+[chara_show name="kata" face="hamehura_Catalina_cos1_do" top="&f.top" left="&f.right" ]
+
+#{name100}
+[v storage="36"]
+{phrase101}[p]
+
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ase"]
+{phrase102}[p]
+
+#
+{phrase103}[r]
+{phrase104}[p]
+
+#
+{phrase105}[r]
+{phrase106}[p]
+
+#
+{phrase107}[r]
+{phrase108}[l][r]
+{phrase109}[p]
+
+#
+{phrase110}[r]
+{phrase111}[r]
+{phrase112}[p]
+
+[if exp="sf.btn_volume==true"]
+[playse storage="se/punch-middle2.ogg" ]
+[endif]
+
+;[kanim layer=0 name="layer_camera" keyframe=quake time=300 count=2 easing=linear]
+@quake_camera
+
+#
+{phrase113}[p]
+
+#
+{phrase114}[l][r]
+{phrase115}[r]
+{phrase116}[p]
+
+#{name100}
+[chara_mod  name="kata" face="hamehura_Catalina_cos1_aku"]
+[v storage="43"]
+
+[kanim layer=0 name="kata" keyframe=quake time=300 count=1 easing=linear]
+
+{phrase117}[r]
+{phrase118}[r]
+{phrase119}[p]
+
+#
+{phrase120}[r]
+{phrase121}[r]
+{phrase122}[p]
+
+#{name100}
+[v storage="45"]
+
+{phrase123}[r]
+{phrase124}[r]
+{phrase125}[p]
+
+#
+{phrase126}[r]
+{phrase127}[p]
+
+#{name1}
+[kanim layer=0 name="maria" keyframe=quake time=300 count=1 easing=linear]
+[font size="40"]
+{phrase128}[p]
+[resetfont]
+
+#
+{phrase129}[l][r]
+{phrase130}[p]
+
+[chara_hide name="maria" wait=false ]
+[chara_hide name="kata" wait=true ]	
+
+[wait time=1000]
+
+;[kanim layer=0 name="layer_camera" keyframe=quake time=300 count=1 easing=linear]
+@quake_camera
+
+
+#？？？
+[font size="40"]
+{phrase131}[p]
+[resetfont]
+
+#{name28}
+[chara_show name="gio" top="&f.top" left="&f.left" face="hamehura_Giord_cos1_do" ]
+[chara_show name="kata" face="hamehura_Catalina_cos1_do" top="&f.top" left="&f.right" ]
+ 
+#{name100}
+
+[chara_mod  name="kata" face="hamehura_Catalina_cos1_odo" ]
+[kanim layer=0 name="kata" keyframe=quake time=300 count=1 easing=linear]
+
+[v storage="50"]
+{phrase132}[p]
+
+#{name28}
+[v storage="51"]
+
+{phrase133}[r]
+{phrase134}[r]
+{phrase135}[p]
+
+#{name100}	
+[chara_mod  name="kata" face="hamehura_Catalina_cos1_ai" ]
+[v storage="52"]
+
+{phrase136}[r]
+{phrase137}[p]
+
+#{name28}	
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+
+{phrase138}[r]
+{phrase139}[p]
+
+{phrase140}[r]
+{phrase141}[l][r]
+{phrase142}[p]
+
+#{name100}	
+[chara_mod  name="kata" face="hamehura_Catalina_cos1_ai"]
+[v storage="54"]
+{phrase143}[p]
+
+#
+{phrase144}[r]
+{phrase145}[p]
+
+#
+{phrase146}[r]
+{phrase147}[r]
+{phrase148}[p]
+
+[fadeoutbgm]
+
+[if exp="sf.btn_volume==true"]
+[playse storage="se/dash-asphalt1.ogg" ]
+[endif]
+
+[chara_hide name="kata" time=2000 wait=true]
+[stopse ]
+
+[playbgm  volume=30   storage="M17_FinalMix.ogg" ]
+
+#{name1}
+[chara_move name="gio" left="&f.right"]
+[chara_show name="maria" top=&f.top left="&f.left" face="hamehura_Maria_cos1_ai"]
+{phrase149}[p]
+
+#
+{phrase150}[l][r]
+{phrase151}[l][r]
+{phrase152}[p]
+
+
+#
+
+{phrase153}[r]
+{phrase154}[l][r]
+{phrase155}[p]
+
+[chara_hide_all ]
+
+[bg storage="hamehura_jiorudo1.png" ]
+[eval exp="sf.gio_cg_1=true" ]
+#{name1}
+{phrase156}[p]
+
+[if exp="f.mixmode==true"]
+[layermode_movie mute=true video=kirakira.webm time=1500 mode=screen wait=false loop=false ]
+[endif]
+
+#{name28}	
+[v storage="61"]
+
+{phrase157}[r]
+{phrase158}[p]
+
+#
+[v storage="h2"]
+{phrase159}[l][r]
+{phrase160}[r]
+{phrase161}[p]
+
+#
+{phrase162}[l][r]
+{phrase163}[p]
+
+[free_layermode time=1000 ]
+
+
+;;;;;;;;;;;;;;
+{phrase164}
+[mask graphic="kokomade.png" folder="bgimage" effect="zoomInRight"]
+
+[wait time="3000" ]
+[bg storage="black.png" ]
+
+[freeimage layer=0]
+[freeimage layer=1]
+@clearfix
+[layopt layer=message0 visible=false]
+
+[mask_off]
+[fadeoutbgm time=3000]
+[fadeinbgm time=1000 storage="M19_FinalMix.ogg" ]
+[jump storage="title.ks"]
+[s]
+*/
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+*dev2
+
+[bg storage="black.png" time=3000]
+
+#
+{phrase165}[p]
+
+[bg storage="HF04_283.png" time=1000 ]
+
+[chara_show name="maria" top="&f.top" left="&f.left" time=1000 face="hamehura_Maria_cos1_mu" ]
+
+#
+{phrase166}[r]
+{phrase167}[p]
+
+#{name1}
+{phrase168}[r]
+{phrase169}[p]
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_def"]
+
+#{name1}
+{phrase170}[l][r]
+{phrase171}[p]
+
+
+#
+{phrase172}[r]
+{phrase173}[p]
+
+{phrase174}[r]
+{phrase175}[p]
+
+[chara_hide name="maria"]
+
+#？？？
+[v storage="h3"]
+{phrase176}[p]
+
+#
+{phrase177}[l][r]
+{phrase178}[p]
+
+[chara_hide name="maria"]
+[chara_show name="gio" top="&f.top" left="&f.right" face="hamehura_Giord_cos1_def"]
+
+
+#{name28}
+
+{phrase179}[r]
+{phrase180}[p]
+
+[chara_hide name="gio"]
+[chara_show name="maria" top="&f.top" left="&f.left" ]
+
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_odo"]
+{phrase181}[p]
+
+
+#
+[v storage="h2"]
+{phrase182}[l][r]
+{phrase183}[r]
+{phrase184}[p]
+
+#
+{phrase185}[r]
+{phrase186}[p]
+
+[chara_hide name="maria"]
+[chara_show name="gio" top="&f.top" left="&f.right" ]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+[v storage="75"]
+
+{phrase187}[p]
+
+#
+
+{phrase188}[l][r]
+{phrase189}[l][r]
+{phrase190}[p]
+
+[chara_hide name="gio"]
+[chara_show name="maria" top="&f.top" left="&f.left" ]
+
+
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ase" ]
+{phrase191}[p]
+
+[chara_hide name="maria"]
+[chara_show name="gio" top="&f.top" left="&f.right" ]
+
+#{name28}	
+
+{phrase192}[l][r]
+[chara_mod  name="gio" face="hamehura_Giord_cos1_ai"]
+
+{phrase193}[p]
+[chara_hide name="gio"]
+[chara_show name="maria" top="&f.top" left="&f.left" ]
+
+#{name1}
+{phrase194}[p]
+
+[chara_hide name="maria"]
+[chara_show name="gio" top="&f.top" left="&f.right" ]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_def"]
+
+{phrase195}[p]
+
+#
+
+{phrase196}[r]
+{phrase197}[p]
+
+[chara_hide name="gio"]
+[chara_show name="maria" top="&f.top" left="&f.left" ]
+
+#{name1}
+{phrase198}
+
+;[glink  color="white"  size="20"  x="360"  width="400"  y="100"  text="{text199}"  target="*select_02_01"  ]
+;[glink  color="white"  size="20"  x="360"  width="400"  y="170"  text="{text200}"  target="*select_02_02"  ]
+
+[button name="button" graphic="select/ans_02_01.png" enterimg="select/ans_02_01_on.png" x=220 y=100 text="{text201}"  target="*select_02_01"]
+[button name="button" graphic="select/ans_02_02.png" enterimg="select/ans_02_02_on.png" x=220 y=240 text="{text202}" target="*select_02_02" ]
+
+
+[s]
+
+;;;;;;跳ぶ　
+*select_02_01
+[cm]
+
+#
+{phrase203}[r]
+{phrase204}[p]
+
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ase"]
+{phrase205}[p]
+
+#
+{phrase206}[r]
+{phrase207}[r]
+{phrase208}[p]
+
+#{name1}
+{phrase209}[l][r]
+{phrase210}[p]
+
+#
+{phrase211}[r]
+{phrase212}[p]
+
+;白転
+[chara_hide name="maria" time=100]
+[chara_hide name="gio" time=100]
+[bg storage="white.png" time=100] 
+
+[wait time=1000 ]
+
+#
+{phrase213}[p]
+
+[bg storage="HF04_292.png" time=1000] 
+
+#
+{phrase214}[p]
+
+[chara_show name="maria" top="&f.top" left="&f.left" wait=false]
+[chara_show name="gio" top="&f.top" left="&f.right" wait=true]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man" ]	
+[v storage="85"]
+{phrase215}[p]
+
+#{name28}
+[celanim anim="red_rose_1" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+@wait time=200
+[celanim anim="red_rose_2" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+
+[love_up]
+
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_odo"]
+
+#
+
+{phrase216}[r]
+{phrase217}[r]
+{phrase218}[p]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_def"]
+
+{phrase219}[l][r]
+{phrase220}[p]
+
+#
+{phrase221}[r]
+{phrase222}[p]
+
+@jump target="common_02"
+
+;;;;;;;;;;ためらう
+*select_02_02
+
+[cm]
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ai"]
+
+{phrase223}[r]
+{phrase224}[p]
+
+#
+{phrase225}[r]
+{phrase226}[r]
+{phrase227}[p]
+
+#
+{phrase228}[r]
+{phrase229}[p]
+
+[chara_hide name="maria"]
+[chara_show name="gio" top="&f.top" left="&f.right" ]
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+[v storage="h1"]
+
+{phrase230}[r]
+{phrase231}[l][r]
+{phrase232}[p]
+
+#
+
+{phrase233}[r]
+{phrase234}[l][r]
+{phrase235}[p]
+
+[chara_hide name="gio"]
+[chara_show name="maria" top="&f.top" left="&f.left" ]
+
+#{name1}
+[chara_mod  name="maria" face="hamehura_Maria_cos1_ase"]
+{phrase236}[p]
+
+#
+{phrase237}[l][r]
+{phrase238}[p]
+
+
+;白転
+[chara_hide name="maria" time=100]
+[chara_hide name="gio" time=100]
+[bg storage="white.png" time=100] 
+
+[wait time=1000 ]
+
+#
+{phrase239}[p]
+
+[bg storage="HF04_292.png" time=1000] 
+;[kanim layer=0 name="layer_camera" keyframe=quake time=300 count=2 easing=linear]
+@quake_camera
+
+#
+{phrase240}[p]
+
+[chara_show name="maria" top="&f.top" left="&f.left" wait=false]
+[chara_show name="gio" top="&f.top" left="&f.right" wait=true]
+
+[chara_mod  name="maria" face="hamehura_Maria_cos1_odo"]
+[chara_mod  name="gio" face="hamehura_Giord_cos1_man"]
+
+#{name28}	
+[v storage="85"]
+
+{phrase241}[p]
+
+#
+{phrase242}[r]
+{phrase243}[r]
+{phrase244}[p]
+
+;;;;;;;;;
+
+*common_02
+
+
+#{name28}
+[chara_mod  name="gio" face="hamehura_Giord_cos1_doya"]
+
+[v storage="88"]
+
+{phrase245}[r]
+{phrase246}[p]
+
+#
+{phrase247}[r]
+{phrase248}[p]
+
+#{name28}
+[v storage="90"]
+{phrase249}[p]
+
+#
+{phrase250}[r]
+{phrase251}[r]
+{phrase252}[p]
+
+*dev3
+[chara_hide_all ]
+
+[bg storage="black.png" time=1000] 
+[wait time=1000 ]
+
+[bg storage="HF04_251.png"]
+[playbgm  volume=30   storage="M28_FinalMix.ogg" ]
+	
+#
+{phrase253}[r]
+{phrase254}[r]
+{phrase255}[p]
+
+#
+{phrase256}[p]
+
+#
+{phrase257}[r]
+{phrase258}[p]
+
+[chara_show name="reijo1" top="&f.top" face="hamehura_DVDmob1_do"]
+[chara_show name="reijo2" top="&f.top" face="hamehura_DVDmob2_do" ]
+[chara_show name="reijo3" top="&f.top" face="hamehura_DVDmob3_do"]
+
+
+#{name259}
+{phrase260}[l][r]
+{phrase261}[p]
+
+#{name262}:hamehura_DVDmob2_fear
+{phrase263}[l][r]
+{phrase264}[p]
+
+#{name259}
+{phrase265}[p]
+
+#{name266}
+{phrase267}[r]
+{phrase268}[p]
+
+#{name262}
+{phrase269}[r]
+{phrase270}[p]
+
+#{name266}:hamehura_DVDmob3_fear
+{phrase271}[r]
+{phrase272}[p]
+
+#{name259}
+{phrase273}[l][r]
+{phrase274}[r]
+{phrase275}[p]
+
+#{name266}:hamehura_DVDmob3_do
+{phrase276}[r]
+{phrase277}[p]
+
+#{name262}:hamehura_DVDmob2_do
+{phrase278}[r]
+{phrase279}[p]
+
+{phrase280}[r]
+{phrase281}[p]
+
+#{name266}:hamehura_DVDmob3_fear
+{phrase282}[l][r]
+{phrase283}[r]
+{phrase284}[p]
+
+[chara_hide_all]
+
+#
+{phrase285}[l][r]
+
+{phrase286}[r]
+{phrase287}[p]
+
+[chara_show name="maria" top=&f.top face="hamehura_Maria_cos1_ai"]
+
+#{name1}
+{phrase288}[p]
+
+#
+{phrase289}[p]
+
+#
+{phrase290}[p]
+
+#
+{phrase291}[r]
+{phrase292}[r]
+{phrase293}[p]
+
+#
+{phrase294}[r]
+{phrase295}[p]
+
+{phrase296}[r]
+{phrase297}[p]
+
+#
+{phrase298}[r]
+{phrase299}[r]
+{phrase300}[p]
+
+[chara_hide name="maria" ]
+
+[bg storage="black.png" ]
+
+
+[bg storage="kyokai.png" ]
+	
+#
+{phrase301}[r]
+{phrase302}[p]
+
+[playbgm  volume=30   storage="M21_FinalMix.ogg"]
+
+[chara_show name="gio" top="&f.top" left="&f.right" face="hamehura_Giord_cos1_doya"]
+
+
+#
+{phrase303}[r]
+{phrase304}[r]
+{phrase305}[p]
+
+[chara_show name="maria" top="&f.top" left="&f.left" face="hamehura_Maria_cos1_def"]
+
+#{name1}
+{phrase306}[p]
+
+#
+{phrase307}[r]
+{phrase308}[p]
+
+[chara_mod name="gio" face="hamehura_Giord_cos1_doya"]
+
+#{name28}
+[v storage="119"]
+{phrase309}[p]
+
+[chara_mod name="maria" face="hamehura_Maria_cos1_mu"]
+
+#
+{phrase310}[r]
+{phrase311}[p]
+
+#{name1}
+{phrase312}[p]
+
+#{name28}:hamehura_Giord_cos1_def
+[v storage="122"]
+{phrase313}[p]
+
+#{name1}:hamehura_Maria_cos1_odo
+{phrase314}[p]
+
+#{name28}
+[v storage="124"]
+{phrase315}[r]
+{phrase316}[r]
+{phrase317}[p]
+
+#{name28}:hamehura_Giord_cos1_doya
+[v storage="125"]
+{phrase318}[r]
+{phrase319}[p]
+
+#{name28}:hamehura_Giord_cos1_def
+[v storage="126"]
+{phrase320}[r]
+{phrase321}[r]
+{phrase322}[p]
+
+#{name28}
+[v storage="127"]
+{phrase323}[r]
+{phrase324}[p]
+
+#{name28}:hamehura_Giord_cos1_doya
+[v storage="128"]
+{phrase325}[r]
+{phrase326}[p]
+
+#
+{phrase327}[r]
+{phrase328}[p]
+
+#{name28}:hamehura_Giord_cos1_man
+[v storage="130"]
+
+{phrase329}[r]
+{phrase330}[p]
+
+#{name1}
+{phrase331}[p]
+
+#
+{phrase332}[r]
+{phrase333}[p]
+
+#
+{phrase334}[r]
+{phrase335}[p]
+
+#
+{phrase336}[p]
+
+[chara_mod name="maria" face="hamehura_Maria_cos1_ase"]
+
+#
+{phrase337}[p]
+
+#
+{phrase338}[r]
+{phrase339}[p]
+
+#{name1}:hamehura_Maria_cos1_ai
+{phrase340}[r]
+{phrase341}[p]
+
+[chara_mod name="gio" face="hamehura_Giord_cos1_ai"]
+
+#{name1}
+{phrase342}[r]
+{phrase343}[l][r]
+{phrase344}[p]
+
+#{name1}
+{phrase345}[l][r]
+{phrase346}[r]
+{phrase347}[p]
+
+#{name28}
+[v storage="139"]
+
+{phrase348}[p]
+
+#
+{phrase349}[r]
+{phrase350}[p]
+
+#{name28}
+[v storage="141"]
+
+{phrase351}[r]
+{phrase352}[p]
+
+[chara_mod name="gio" face="hamehura_Giord_cos1_ai"]
+
+#
+{phrase353}[r]
+{phrase354}[p]
+
+[kanim layer=0 name="maria" keyframe=quake time=300 count=1 easing=linear]
+
+#
+{phrase355}[r]
+{phrase356}[r]
+{phrase357}[p]
+
+#{name28}:hamehura_Giord_cos1_doya
+[v storage="144"]
+{phrase358}[r]
+{phrase359}[r]
+{phrase360}[p]
+
+#{name28}
+[v storage="145"]
+{phrase361}[p]
+{phrase362}[l][r]
+{phrase363}[r]
+{phrase364}[p]
+
+#{name28}:hamehura_Giord_cos1_def
+[v storage="146"]
+
+{phrase365}[p]
+
+#
+
+{phrase366}[l][r]
+{phrase367}[r]
+{phrase368}[p]
+
+#{name1}
+{phrase369}
+
+;[glink  color="white"  size="20"  x="360"  width="400"  y="100"  text="{text370}"  target="*select_03_01"  ]
+;[glink  color="white"  size="20"  x="360"  width="400"  y="170"  text="{text371}"  target="*select_03_02"  ]
+
+[button name="button" graphic="select/ans_03_01.png" enterimg="select/ans_03_01_on.png" x=220 y=100 text="{text372}"  target="*select_03_01"]
+[button name="button" graphic="select/ans_03_02.png" enterimg="select/ans_03_02_on.png" x=220 y=240 text="{text373}" target="*select_03_02" ]
+
+[s]
+
+*select_03_01
+[eval exp="f.end=1"]
+
+[cm]
+#{name1}:hamehura_Maria_cos1_ai
+{phrase374}[l][r]
+{phrase375}[p]
+
+#
+{phrase376}[l][r]
+{phrase377}[p]
+
+{phrase378}[p]
+
+#{name1}
+{phrase379}[r]
+{phrase380}[p]
+
+#{name28}:hamehura_Giord_cos1_man
+[v storage="151"]
+{phrase381}[p]
+
+
+
+[chara_hide_all]
+[bg storage="white.png" time=1000] 
+
+[wait time=1000 ]
+
+[bg storage="hamehura_jiorudo2.png" time=3000 ]
+[eval exp="sf.gio_cg_2=true" ]
+
+[if exp="f.mixmode==true"]
+[layermode_movie mute=true video=kirakira.webm time=1000 mode=screen wait=false loop=false ]
+[endif]
+
+#
+{phrase382}[p]
+
+{phrase383}[r]
+{phrase384}[p]
+
+#
+[v storage="h2"]
+{phrase385}[p]
+
+{phrase386}[r]
+{phrase387}[p]
+
+#
+{phrase388}[l][r]
+{phrase389}[p]
+
+#
+[v storage="h4"]
+
+{phrase390}[p]
+
+@jump target="common_03"
+
+*select_03_02
+
+[eval exp="f.end=2"]
+
+[cm]
+
+#{name1}:hamehura_Maria_cos1_def2
+{phrase391}[l][r]
+{phrase392}[p]
+
+#
+{phrase393}[p]
+
+{phrase394}[l][r]
+{phrase395}[p]
+
+#{name28}
+[celanim anim="red_rose_1" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+@wait time=200
+[celanim anim="red_rose_2" layer="1" x=680 y=150 count=1 speed=0.5 wait=true]
+
+[love_up]
+
+#
+{phrase396}[r]
+{phrase397}[p]
+
+#{name28}:hamehura_Giord_cos1_man
+{phrase398}[p]
+
+#
+{phrase399}[r]
+{phrase400}[p]
+
+[chara_hide_all]
+[bg storage="white.png" time=1000] 
+
+[bg storage="hamehura_jiorudo2.png" time=3000 ]
+[eval exp="sf.gio_cg_2=true" ]
+
+[if exp="f.mixmode==true"]
+[layermode_movie mute=true video=kirakira.webm time=1000 mode=screen wait=false loop=false ]
+[endif]
+
+#
+{phrase401}[r]
+{phrase402}[p]
+
+#{name1}
+{phrase403}[p]
+
+#
+{phrase404}[r]
+{phrase405}[p]
+
+#
+
+{phrase406}[l][r]
+{phrase407}[r]
+{phrase408}[p]
+
+#
+{phrase409}[l][r]
+{phrase410}[p]
+
+#
+[v storage="h4"]
+{phrase411}[p]
+*common_03
+
+#
+{phrase412}[r]
+{phrase413}[p]
+
+#{name28}
+[v storage="157"]
+
+{phrase414}[r]
+{phrase415}[r]
+{phrase416}[p]
+
+#
+[v storage="h2"]
+
+{phrase417}[r]
+{phrase418}[p]
+
+#
+{phrase419}[p]
+
+[free_layermode time=1000 ]
+
+#
+{phrase420}[r]
+{phrase421}[p]
+[layopt layer=message0 visible=false]
+[freeimage layer=0]
+[freeimage layer=1]
+@clearfix
+
+[if exp="f.love==3"]
+[bg time=1000 storage="happy_end.png"]
+[else]
+[bg time=1000 storage="normal_end.png"]
+[endif]
+
+[wait time=8000]
+
+;タイトルに戻る。
+
+[layopt layer=message0 visible=false]
+[fadeoutbgm time=3000]
+[wait time=3000]
+[fadeinbgm time=1000 storage="M19_FinalMix.ogg" ]
+[jump storage="title.ks"]
+
+[s]
+
